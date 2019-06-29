@@ -1,6 +1,7 @@
 ---
 title: "Regressão linear na prática"
 output: html_notebook
+author: Aluna - Lorena Pereira
 ---
 
 ```{r warning=FALSE, echo=FALSE}
@@ -93,8 +94,12 @@ Parece que existe uma relação. Vamos criar um modelo então:
 ```{r}
 modelo1 = lm(producao ~ docentes, data = cacc)
 
-tidy(modelo1, conf.int = TRUE, conf.level = 0.95)
 glance(modelo1)
+```
+
+```{r}
+tidy(modelo1, conf.int = TRUE, conf.level = 0.95)
+
 ```
 
 Para visualizar o modelo:
@@ -116,19 +121,19 @@ Normalmente reportaríamos o resultado da seguinte maneira, substituindo VarInde
 
 > Regressão múltipla foi utilizada para analisar se VarIndep1 e VarIndep2 tem uma associação significativa com VarDep. Os resultados da regressão indicam que um modelo com os 2 preditores no formato VarDep = XXX.VarIndep1 + YYY.VarIndep2 explicam XX,XX% da variância da variável de resposta (R2 = XX,XX). VarIndep1, medida como/em [unidade ou o que é o 0 e o que é 1] tem uma relação significativa com o erro (b = [yy,yy; zz,zz], IC com 95%), assim como VarIndep2 medida como [unidade ou o que é o 0 e o que é 1] (b = [yy,yy; zz,zz], IC com 95%). O aumento de 1 unidade de VarIndep1 produz uma mudança de xxx em VarDep, enquanto um aumento...
 
-Produza aqui a sua versão desse texto, portanto:
+**Produza aqui a sua versão desse texto, portanto:**
 
 -----
 
-*SUBSTITUA ESSE TEXTO*
+Regressão múltipla foi utilizada para analisar se Docentes tem uma associação com Produção. Os resultados da regressão indicam que um modelo com 1 preditor no formato Produção = -41,27 + 4,8.docentes explicam 81,46% da variância da variável de resposta. Docentes, é medido como a contagem de docentes permanentes em um programa durante 3 anos, e tem uma relação positiva com Produção (b = [4,27; 5,35], IC com 95%).
 
 -----
 
-Dito isso, o que significa a relação que você encontrou na prática para entendermos os programas de pós graduação no Brasil? E algum palpite de por que a relação que encontramos é forte?
+**Dito isso, o que significa a relação que você encontrou na prática para entendermos os programas de pós graduação no Brasil? E algum palpite de por que a relação que encontramos é forte?**
 
 -----
 
-*SUBSTITUA ESSE TEXTO PELA SUA DISCUSSÃO DOS RESULTADOS*
+Podemos observar claramente a associação entre a quantidade de docentes e a quantidade de artigos produzidos, quanto mais docentes um programa de pós-graduação tem, mais alunos podem ser admitidos e orientados de forma a desenvolver uma determinada área de pesquisa e assim corroborar para a produção científica do programa.
 
 -----
 
@@ -148,6 +153,7 @@ E se considerarmos também o número de alunos?
 modelo2 = lm(producao ~ docentes + mestrados + doutorados, data = cacc)
 
 tidy(modelo2, conf.int = TRUE, conf.level = 0.95)
+
 glance(modelo2)
 ```
 
@@ -173,11 +179,14 @@ para_plotar_modelo %>%
   geom_point(data = cacc, aes(y = producao, colour = doutorados))
 ```
 
-Considerando agora esses três fatores, o que podemos dizer sobre como cada um deles se relaciona com a produção de um programa de pós em CC? E sobre o modelo? Ele explica mais que o modelo 1? 
+
+**Considerando agora esses três fatores, o que podemos dizer sobre como cada um deles se relaciona com a produção de um programa de pós em CC? E sobre o modelo? Ele explica mais que o modelo 1?**
 
 -----
 
-**EXPLICAÇÃO**: *Substitua esse texto por texto feito tal qual o que usamos com uma variável*
+Regressão múltipla foi utilizada para analisar se Docentes, Mestrados e Doutorados tem uma associação com Produção. Os resultados da regressão indicam que um modelo com 3 preditores no formato Produção = -14,37 + 3,5.docentes - 0,19.mestrados + 1.doutorados explicam 87,06% da variância da variável de resposta. Docentes, é medido como a contagem de docentes permanentes em um programa durante 3 anos, e tem uma relação positiva com Produção (b = [2,58; 4,41], IC com 95%). Assim como Mestrados, é medido como a contagem de dissertações em um programa durante 3 anos, e tem uma relação negativa com Produção (b = [-0,36; -0,03], IC com 95%). Já Doutorados, que é medido como a contagem de teses em um programa durante 3 anos, tem uma relação positiva com Produção (b = [0,63; 1,37], IC com 95%).
+
+A partir dos resultados pode-se observar que o modelo atual tem uma maior porcentagem de explicação do que o modelo anterior que possuía apenas docentes. O preditor Docente apresenta o maior impacto na variável resposta, podendo variar de 2,58 a 4,41 para a população, quando consideramos o seu intervalo de confiança. Já Mestrados apresenta um impacto pequeno e negativo na Producao. Já quando olhamos Doutorados a mudança continua pequena porém positiva, e vale ressaltar que nos dados analisados existem programas que não possuem doutorado, logo o seu valor próximo de 1 tende a representar apenas o impacto do próprio número de doutores presentes no programa, sendo assim quando não existir apenas não vai adicionar nada ao valor de produtividade.
 
 -----
 
@@ -201,7 +210,7 @@ tidy(modelo3, conf.int = TRUE, conf.level = 0.95)
 ```
 
 Regressão múltipla foi utilizada para analisar se Mestrados, Doutorados e Mestrados_pprof(mestrados por docentes) tem uma associação com Produtividade. Os resultados da regressão indicam que um modelo com os 3 preditores no formato 
-Produtividade = -0,1.mestrados + 0,03.doutorados + 0,20.mestrados_pprof explicam 35,87% da variância da variável de resposta. Mestrados, é medida como a contagem de dissertações em um programa durante 3 anos, tem uma relação negativa com Produtividade (b = [-0,0215; 0,0002], IC com 95%), assim como Doutorados medida como a contagem de teses em um programa durante 3 anos (b = [0,0128; 0,0486], IC com 95%) e como Mestrados_pprof medida como a taxa de alunos de mestrado por docente permanente durante 3 anos (b = [-0,0976; 0,5020], IC com 95%).
+Produtividade = 2,7 - 0,1.mestrados + 0,03.doutorados + 0,20.mestrados_pprof explicam 35,87% da variância da variável de resposta. Mestrados, é medida como a contagem de dissertações em um programa durante 3 anos, tem uma relação negativa com Produtividade (b = [-0,0215; 0,0002], IC com 95%), assim como Doutorados medida como a contagem de teses em um programa durante 3 anos (b = [0,0128; 0,0486], IC com 95%) e como Mestrados_pprof medida como a taxa de alunos de mestrado por docente permanente durante 3 anos (b = [-0,0976; 0,5020], IC com 95%).
 
 Considerando os programas de pós-graduação brasileiros que possuem mestrado e doutorado, pode-se observar que 
 o aumento de 1 unidade em Mestrado produz uma mudança de -0,01 em Produtividade e que quando consideramos o intervalo de confiança os valores de impacto são pequenos, podendo inclusive ser 0, ou seja não ter impacto em Produtividade.
