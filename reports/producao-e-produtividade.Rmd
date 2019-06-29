@@ -6,7 +6,9 @@ output: html_notebook
 ```{r warning=FALSE, echo=FALSE}
 library(tidyverse)
 library(broom)
+library(skimr)
 library(modelr)
+
 source(here::here("code/lib.R"))
 theme_set(theme_bw())
 
@@ -185,3 +187,31 @@ Considerando agora esses três fatores, o que podemos dizer sobre como cada um d
 Diferente de medirmos produção (total produzido), é medirmos produtividade (produzido / utilizado). Abaixo focaremos nessa análise. Para isso crie um modelo que investiga como um conjunto de fatores que você julga que são relevantes se relacionam com a produtividade dos programas. Crie um modelo que avalie como _pelo menos 3 fatores_ se relacionam com a produtividade de um programa. Pode reutilizar fatores que já definimos e analizamos para produção. Mas cuidado para não incluir fatores que sejam função linear de outros já incluídos (ex: incluir A, B e um tercero C=A+B)
 
 Produza abaixo o modelo e um texto que comente (i) o modelo, tal como os que fizemos antes, e (ii) as implicações - o que aprendemos sobre como funcionam programas de pós no brasil?.
+
+```{r}
+modelo3 = lm(produtividade ~ mestrados + doutorados + mestrados_pprof, data = cacc_md)
+
+glance(modelo3)
+```
+
+
+```{r}
+tidy(modelo3, conf.int = TRUE, conf.level = 0.95)
+
+```
+
+Regressão múltipla foi utilizada para analisar se Mestrados, Doutorados e Mestrados_pprof(mestrados por docentes) tem uma associação com Produtividade. Os resultados da regressão indicam que um modelo com os 3 preditores no formato 
+Produtividade = -0,1.mestrados + 0,03.doutorados + 0,20.mestrados_pprof explicam 35,87% da variância da variável de resposta. Mestrados, é medida como a contagem de dissertações em um programa durante 3 anos, tem uma relação negativa com Produtividade (b = [-0,0215; 0,0002], IC com 95%), assim como Doutorados medida como a contagem de teses em um programa durante 3 anos (b = [0,0128; 0,0486], IC com 95%) e como Mestrados_pprof medida como a taxa de alunos de mestrado por docente permanente durante 3 anos (b = [-0,0976; 0,5020], IC com 95%).
+
+Considerando os programas de pós-graduação brasileiros que possuem mestrado e doutorado, pode-se observar que 
+o aumento de 1 unidade em Mestrado produz uma mudança de -0,01 em Produtividade e que quando consideramos o intervalo de confiança os valores de impacto são pequenos, podendo inclusive ser 0, ou seja não ter impacto em Produtividade.
+Quando observamos Doutorado a mudança produzida também é pequena mas é positiva podendo alcançar valores entre 
+0,01 até 0,05. Já Mestrados_pprof dos preditores analisados teve o valor de impacto maior, mas ainda assim pequeno, sendo de 0,20, mas quando olhamos o seu intervalo de confiança observamos que ele pode ir de -0,1 até 0,5 e nesse caso também é uma variável que considerando a população pode não apresentar impacto em produtividade.
+
+A partir do gráfico abaixo e do contexto da avaliação da Capes, existem algumas observações que podem auxiliar no entendimento dos resultados alcançados e a descobrir novas fontes de análise. Programas com muitos alunos e poucos docentes pode resultar na sobrecarga dos professores o que no caso pode dificultar a produção ativa de material, quando observamos os valores de produtividade podemos ver que existem mais programas com produtividade acima de 4 quando Mestrados_pprof está entre 3 e 4 do que quando está entre 5 e 6, mas ainda assim se faz preciso a pesquisa e observação de outros fatores: taxa de alunos orientados(mestrado e doutorado), condições de trabalho, infraestrtura, acúmulo de atividades, áreas de estudo e dificuldade de produção em áreas de estudo, são exemplos de informações complementares.
+
+```{r}
+cacc %>% 
+  ggplot(aes(x = mestrados_pprof, y = produtividade)) + 
+  geom_point()
+```
